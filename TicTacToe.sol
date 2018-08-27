@@ -43,6 +43,7 @@ contract TicTacToe {
     This function allows to withdraw money and transfer it to the network owner.
     */
     function getFunds() onlyOwner public {
+        require(msg.value >= 1 ether, "The minimal amount to fund the network is 1 Ether");
         owner.transfer(address(this).balance);
     }
     
@@ -59,7 +60,7 @@ contract TicTacToe {
     }*/
     
     function startGame(address _player) payable public {
-        require(msg.value >= 0.0000001 ether, "Dealer registration cost is 0.00000001 Ether");
+        require(msg.value >= 0.0000001 ether, "Insert 0.00000001 Ether to start a new game");
         
         player = _player;
         
