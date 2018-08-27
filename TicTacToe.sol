@@ -8,8 +8,7 @@ pragma solidity ^0.4.24;
 
 /// @title TicTacToe o Tres en Línea o Gato
 contract TicTacToe {
-    uint n;
-    uint[9] public a;
+    uint[9] public gameBoard;
     uint totalFunds;
     
     address owner;
@@ -64,20 +63,19 @@ contract TicTacToe {
         
         player = _player;
         
-        n = 0;
-        for(uint i = 0; i < a.length; i++)
-            a[i] = 0;
+        for(uint i = 0; i < gameBoard.length; i++)
+            gameBoard[i] = 0;
             
-        a[4] = 1;
+        gameBoard[4] = 1;
         
         emit StatusGame("The game made its roll and it was in position 4");
     }
     
     function  roll(uint _position) payable public {
         require(_position >= 0 && _position <= 8, "Wrong position!");
-        require(a[_position] == 0, "You can not roll in that position!");
+        require(gameBoard[_position] == 0, "You can not roll in that position!");
         
-        a[_position] = 2;
+        gameBoard[_position] = 2;
         
         rollSmartContract();
         
@@ -92,9 +90,9 @@ contract TicTacToe {
     function rollSmartContract() private {
         bool emptyBoxes = true;
         
-        for(uint i = 0; i < a.length; i++) {
-            if (a[i] == 0) {
-                a[i] = 1;
+        for(uint i = 0; i < gameBoard.length; i++) {
+            if (gameBoard[i] == 0) {
+                gameBoard[i] = 1;
                 emptyBoxes = true;
                 break;
             }
@@ -111,28 +109,28 @@ contract TicTacToe {
     
     function playerWon() private view returns (bool) {
         for (uint i= 0; i < 5; i++) {
-            if (i == 0 && a[0] == 2) {
-                if (a[i+1] == 2 && a[i+2] == 2) return true;
-                if (a[i+3] == 2 && a[i+6] == 2) return true;
-                if (a[i+4] == 2 && a[i+8] == 2) return true;
+            if (i == 0 && gameBoard[0] == 2) {
+                if (gameBoard[i+1] == 2 && gameBoard[i+2] == 2) return true;
+                if (gameBoard[i+3] == 2 && gameBoard[i+6] == 2) return true;
+                if (gameBoard[i+4] == 2 && gameBoard[i+8] == 2) return true;
             }
             
-            if (i == 1 && a[i] == 2) {
-                if (a[i+3] == 2 && a[i+6] == 2) return true;
+            if (i == 1 && gameBoard[i] == 2) {
+                if (gameBoard[i+3] == 2 && gameBoard[i+6] == 2) return true;
             }
             
-            if (i == 2 && a[i] == 2) {
-                if (a[i+2] == 2 && a[i+4] == 2) return true;
-                if (a[i+3] == 2 && a[i+6] == 2) return true;
+            if (i == 2 && gameBoard[i] == 2) {
+                if (gameBoard[i+2] == 2 && gameBoard[i+4] == 2) return true;
+                if (gameBoard[i+3] == 2 && gameBoard[i+6] == 2) return true;
             }
             
-            if (i == 3 && a[i] == 2) {
-                if (a[i+1] == 1 && a[i+2] == 2) return true;
+            if (i == 3 && gameBoard[i] == 2) {
+                if (gameBoard[i+1] == 1 && gameBoard[i+2] == 2) return true;
             }
             
-            if (i == 4 && a[i] == 2) {
-                if (a[i-1] == 2 && a[i+1] == 2) return true;
-                if (a[i-3] == 2 && a[i+3] == 2) return true;
+            if (i == 4 && gameBoard[i] == 2) {
+                if (gameBoard[i-1] == 2 && gameBoard[i+1] == 2) return true;
+                if (gameBoard[i-3] == 2 && gameBoard[i+3] == 2) return true;
             }
         }
         
@@ -141,28 +139,28 @@ contract TicTacToe {
     
     function smartContractWon() private view returns (bool) {
         for (uint i= 0; i < 5; i++) {
-            if (i == 0 && a[0] == 1) {
-                if (a[i+1] == 1 && a[i+2] == 1) return true;
-                if (a[i+3] == 1 && a[i+6] == 1) return true;
-                if (a[i+4] == 1 && a[i+8] == 1) return true;
+            if (i == 0 && gameBoard[0] == 1) {
+                if (gameBoard[i+1] == 1 && gameBoard[i+2] == 1) return true;
+                if (gameBoard[i+3] == 1 && gameBoard[i+6] == 1) return true;
+                if (gameBoard[i+4] == 1 && gameBoard[i+8] == 1) return true;
             }
             
-            if (i == 1 && a[i] == 1) {
-                if (a[i+3] == 1 && a[i+6] == 1) return true;
+            if (i == 1 && gameBoard[i] == 1) {
+                if (gameBoard[i+3] == 1 && gameBoard[i+6] == 1) return true;
             }
             
-            if (i == 2 && a[i] == 1) {
-                if (a[i+2] == 1 && a[i+4] == 1) return true;
-                if (a[i+3] == 1 && a[i+6] == 1) return true;
+            if (i == 2 && gameBoard[i] == 1) {
+                if (gameBoard[i+2] == 1 && gameBoard[i+4] == 1) return true;
+                if (gameBoard[i+3] == 1 && gameBoard[i+6] == 1) return true;
             }
             
-            if (i == 3 && a[i] == 1) {
-                if (a[i+1] == 1 && a[i+2] == 1) return true;
+            if (i == 3 && gameBoard[i] == 1) {
+                if (gameBoard[i+1] == 1 && gameBoard[i+2] == 1) return true;
             }
             
-            if (i == 4 && a[i] == 1) {
-                if (a[i-1] == 1 && a[i+1] == 1) return true;
-                if (a[i-3] == 1 && a[i+3] == 1) return true;
+            if (i == 4 && gameBoard[i] == 1) {
+                if (gameBoard[i-1] == 1 && gameBoard[i+1] == 1) return true;
+                if (gameBoard[i-3] == 1 && gameBoard[i+3] == 1) return true;
             }
         }
         
