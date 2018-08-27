@@ -1,7 +1,7 @@
 /*
 * Author: Edgar Herrador
-* Date: August 22, 2018
-* Version: 0.1
+* Date: August 26, 2018
+* Version: 0.5
 */
 
 pragma solidity ^0.4.24;
@@ -36,6 +36,7 @@ contract TicTacToe {
     }
     
     function setFunds() payable public onlyOwner {
+        require(msg.value >= 1 ether, "The minimal amount to fund the network is 1 Ether");
         totalFunds = msg.value;
     }
     
@@ -43,7 +44,6 @@ contract TicTacToe {
     This function allows to withdraw money and transfer it to the network owner.
     */
     function getFunds() onlyOwner public {
-        require(msg.value >= 1 ether, "The minimal amount to fund the network is 1 Ether");
         owner.transfer(address(this).balance);
     }
     
@@ -54,13 +54,12 @@ contract TicTacToe {
         selfdestruct(owner);
     }
     
-    /*function newPlayer1(address _player1) public returns(bool){
-        player1 = _player1;
-        return true;
-    }*/
-    
+    /*
+    Start a new game
+    */
     function startGame(address _player) payable public {
         require(msg.value >= 0.0000001 ether, "Insert 0.00000001 Ether to start a new game");
+        require(msg.value * 2 >= totalFunds, "Not enough totalFunds to start a new game");
         
         player = _player;
         
@@ -72,11 +71,16 @@ contract TicTacToe {
         emit StatusGame("The game made its roll and it was in position 4");
     }
     
+    /*
+    This function is called when a player play his turn
+    */
     function  roll(uint _position) payable public {
         require(_position >= 0 && _position <= 8, "Wrong position!");
         require(gameBoard[_position] == 0, "You can not roll in that position!");
         
-        gameBoard[_position] = 2;
+        // 0’s for empty square.
+        // 1’s for player position on the game board. 2’s for smart contract position.
+        gameBoard[_position] = 2;  
         
         rollSmartContract();
         
@@ -88,6 +92,9 @@ contract TicTacToe {
         emit StatusGame("The player your roll was made!");
     }
     
+    /*
+    Function to calculate the turn of smart contract
+    */
     function rollSmartContract() private {
         bool emptyBoxes = true;
         
@@ -108,6 +115,9 @@ contract TicTacToe {
             emit StatusGame("The smart contract is the winner!");
     }
     
+    /*
+    Verifying if the player won
+    */
     function playerWon() private view returns (bool) {
         for (uint i= 0; i < 5; i++) {
             if (i == 0 && gameBoard[0] == 2) {
@@ -138,6 +148,9 @@ contract TicTacToe {
         return false;
     }
     
+    /*
+    Verifying if the smart contract won
+    */
     function smartContractWon() private view returns (bool) {
         for (uint i= 0; i < 5; i++) {
             if (i == 0 && gameBoard[0] == 1) {
