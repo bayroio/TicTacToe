@@ -9,7 +9,9 @@ pragma solidity ^0.4.24;
 /// @title TicTacToe o Tres en Línea o Gato
 contract TicTacToe {
     uint[9] public gameBoard;
-    uint totalFunds;
+    uint public totalFunds;
+    uint public amountPaidPlaying;
+    uint public valor2;
     
     address owner;
     address player;
@@ -59,8 +61,10 @@ contract TicTacToe {
     */
     function startGame(address _player) payable public {
         require(msg.value >= 0.0000001 ether, "Insert 0.00000001 Ether to start a new game");
-        require(msg.value * 2 >= totalFunds, "Not enough totalFunds to start a new game");
+        require(totalFunds >= (msg.value * 2), "Not enough totalFunds to start a new game");
         
+        amountPaidPlaying = msg.value;
+
         player = _player;
         
         for(uint i = 0; i < gameBoard.length; i++)
@@ -74,10 +78,9 @@ contract TicTacToe {
     /*
     This function is called when a player play his turn
     */
-    function  roll(uint _position) payable public {
+    function  roll(uint _position) onlyPlayer payable public {
         require(_position >= 0 && _position <= 8, "Wrong position!");
-        require(gameBoard[_position] == 0, "You can not roll in that position!");
-        
+
         // 0’s for empty square.
         // 1’s for player position on the game board. 2’s for smart contract position.
         gameBoard[_position] = 2;  
@@ -86,7 +89,7 @@ contract TicTacToe {
         
         if (playerWon()) {
             emit StatusGame("The player is the winner! The payout will be done Nearly Instant.");
-            player.transfer(msg.value * 2);
+            player.transfer(amountPaidPlaying * 2);
         }
         
         emit StatusGame("The player your roll was made!");
