@@ -11,7 +11,6 @@ contract TicTacToe {
     uint[9] public gameBoard;
     uint public totalFunds;
     uint public amountPaidPlaying;
-    uint public valor2;
     
     address owner;
     address player;
